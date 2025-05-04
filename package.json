@@ -1,0 +1,25 @@
+{
+  "name": "create-robust-nuxt",
+  "author": "Mikhail Fomin <innosan.work@gmail.com> (https://innosan.netlify.app/)",
+  "keywords": [
+    "nuxt",
+    "starter",
+    "template",
+    "boilerplate",
+    "vue",
+    "auth",
+    "i18n"
+  ],
+  "version": "0.1.0",
+  "bin": {
+    "create-robust-nuxt": "bin/index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "inquirer": "^12",
+    "execa": "^9",
+    "fs-extra": "^11",
+    "chalk": "^5",
+    "degit": "^2.8.4"
+  }
+}
