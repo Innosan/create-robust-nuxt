@@ -1,9 +1,9 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { baseSet, auth, i18n, networking } from "./featureDefinitions.js";
+import { baseSet, auth, networking } from "./featureDefinitions.js";
 
-const featureMap = { auth, i18n, networking };
+const featureMap = { auth, networking };
 
 export async function prunePackageJson(targetDir, selectedFeatures) {
   const pkgPath = path.join(targetDir, "package.json");

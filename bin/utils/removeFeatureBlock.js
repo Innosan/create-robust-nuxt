@@ -2,45 +2,44 @@ import fs from "fs-extra";
 import path from "path";
 
 /**
- * Removes blocks in files between @feature/[name] - start/end markers.
- * Supports both JS and HTML (Vue SFC) comments.
+ * Removes blocks between @feature/[name] - start/end markers in specified files,
+ * using targetDir as the root for relative paths.
+ *
+ * @param targetDir - Project root directory
+ * @param relativePaths - Array of file paths (relative to targetDir)
+ * @param feature - Feature name to remove
  */
-export async function removeFeatureBlock(targetDir, feature) {
-  try {
-    const files = await fs.readdir(targetDir);
+export async function removeFeatureBlockFromFiles(
+  targetDir,
+  relativePaths,
+  feature,
+) {
+  const blockStart = `@feature/${feature} - start`;
+  const blockEnd = `@feature/${feature} - end`;
 
-    for (const file of files) {
-      const fullPath = path.join(targetDir, file);
+  const regex = new RegExp(
+    `(?:\\/\\/|<!--)\\s*${blockStart}[\\s\\S]*?(?:\\/\\/|<!--)?\\s*${blockEnd}\\s*(?:-->)?`,
+    "g",
+  );
 
-      const stats = await fs.stat(fullPath);
-      if (stats.isDirectory()) {
-        await removeFeatureBlock(fullPath, feature);
-        continue;
-      }
+  for (const relPath of relativePaths) {
+    const fullPath = path.join(targetDir, relPath);
 
-      // Only process source files
-      if (!/\.(ts|js|vue)$/.test(file)) continue;
+    // Only process supported file types
+    if (!/\.(ts|js|vue)$/.test(fullPath)) continue;
 
-      const content = await fs.readFile(fullPath, "utf-8");
-
-      const blockStart = `@feature/${feature} - start`;
-      const blockEnd = `@feature/${feature} - end`;
-
-      const regex = new RegExp(
-        `(?:\\/\\/|<!--)\\s*${blockStart}[\\s\\S]*?(?:\\/\\/|<!--)?\\s*${blockEnd}\\s*(?:-->)?`,
-        "g",
-      );
-
+    try {
+      const content = await fs.readFile(fullPath, "utf8");
       const newContent = content.replace(regex, "").trimEnd();
 
       if (newContent !== content) {
         await fs.writeFile(fullPath, newContent);
-        console.log(
-          `[feature:remove] Removed "${feature}" block in ${fullPath}`,
-        );
+        // console.log(
+        //   `[feature:remove] Removed "${feature}" block in ${relPath}`,
+        // );
       }
+    } catch (err) {
+      console.error(`Error processing ${relPath}:`, err.message);
     }
-  } catch (error) {
-    console.error("Error while processing the directory:", error);
   }
 }

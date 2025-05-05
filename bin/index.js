@@ -7,8 +7,10 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 
-import { removeFeatureBlock } from "./utils/removeFeatureBlock.js";
+import { removeFeatureBlockFromFiles } from "./utils/removeFeatureBlock.js";
 import { prunePackageJson } from "./utils/packageBuilder.js";
+import { generateEnvFile } from "./utils/envBuilder.js";
+import { auth, networking } from "./utils/featureDefinitions.js";
 
 const answers = await inquirer.prompt([
   {
@@ -39,41 +41,51 @@ const targetDir = path.resolve(process.cwd(), projectName);
 const emitter = degit("Innosan/nuxt-template-project");
 await emitter.clone(targetDir);
 
+const selectedFeatures = [];
+
+console.log(
+  chalk.blue("\nPreparing your new project! Please, wait for a moment..."),
+);
+
 // Remove unnecessary files and directories of auth module
 if (!includeAuth) {
   // Files & Directories to remove
-  await fs.remove(`${targetDir}/components/features/auth`);
-  await fs.remove(`${targetDir}/composables`);
-  await fs.remove(`${targetDir}/middleware`);
-
-  await fs.remove(`${targetDir}/layouts/authed.vue`);
-  await fs.remove(`${targetDir}/layouts/unauthed.vue`);
-
-  await fs.remove(`${targetDir}/pages/login.vue`);
+  for (const fileOrDirectory of auth.directoriesAndFiles) {
+    await fs.remove(`${targetDir}/${fileOrDirectory}`);
+  }
 
   // Lines to remove from files
-  await removeFeatureBlock(targetDir, "auth");
+  await removeFeatureBlockFromFiles(targetDir, auth.lines, auth.marker);
+} else {
+  selectedFeatures.push(auth.marker);
 }
 
-// Example: remove networking files if not selected
+// Remove networking files if not selected
 if (!includeNetworking) {
   // Files & Directories to remove
-  await fs.remove(`${targetDir}/components/features/networking`);
-  await fs.remove(`${targetDir}/types/server`);
-  await fs.remove(`${targetDir}/server/api`);
-  await fs.remove(`${targetDir}/pages/articles.vue`);
-  await fs.remove(`${targetDir}/stores/articles.ts`);
+  for (const fileOrDirectory of networking.directoriesAndFiles) {
+    await fs.remove(`${targetDir}/${fileOrDirectory}`);
+  }
 
   // Lines to remove from files
-  await removeFeatureBlock(targetDir, "networking");
+  await removeFeatureBlockFromFiles(
+    targetDir,
+    networking.lines,
+    networking.marker,
+  );
+} else {
+  selectedFeatures.push(networking.marker);
 }
 
-const selectedFeatures = [];
-if (includeAuth) selectedFeatures.push("auth");
-if (includeNetworking) selectedFeatures.push("networking");
-
 await prunePackageJson(targetDir, selectedFeatures);
+await generateEnvFile(targetDir, selectedFeatures);
 
 console.log(
-  chalk.green(`\nProject ready! cd ${projectName} and start building.`),
+  chalk.green(`\nProject ready! cd ${projectName} and start building.\n`),
+);
+
+console.log(
+  chalk.blue(
+    "👉 It is recommended to run `pnpm exec prettier --write .` to format your project after `pnpm i`.\n",
+  ),
 );
