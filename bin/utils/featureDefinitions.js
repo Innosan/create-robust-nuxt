@@ -18,6 +18,7 @@ export const versions = {
 
   sass: "^1.87.0",
   "@formkit/auto-animate": "^0.8.2",
+  "@iconify-json/heroicons": "^1.2.2",
 
   "@intlify/message-compiler": "^11.1.3",
   "@nuxtjs/i18n": "^9.5.4",
@@ -43,6 +44,9 @@ export const baseSet = {
       "@nuxt/eslint": versions["@nuxt/eslint"],
 
       sass: versions["sass"],
+      typescript: versions["typescript"],
+
+      "@iconify-json/heroicons": versions["@iconify-json/heroicons"],
     },
     prod: {
       "@nuxt/ui": versions["@nuxt/ui"],

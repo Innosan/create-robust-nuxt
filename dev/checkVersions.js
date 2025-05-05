@@ -1,37 +1,66 @@
 import fs from "fs-extra";
 import path from "path";
-import { execa } from "execa"; // Modern alternative to child_process
+import { execa } from "execa";
 
-import { versions } from "../bin/utils/featureDefinitions.js";
+import {
+  versions,
+  baseSet,
+  featuresMap,
+} from "../bin/utils/featureDefinitions.js";
 
 async function generateAndCheckVersions() {
   const devDir = path.join(process.cwd(), "dev");
   const pkgPath = path.join(devDir, "package.json");
 
-  // Ensure dev directory exists
   await fs.ensureDir(devDir);
 
-  // Create temp package.json structure
-  const tempPackageJson = {
-    name: "temp-check",
-    version: "0.0.1",
-    dependencies: { ...versions },
+  // Initialize package.json structure
+  const pkg = {
+    name: "nuxt-app",
+    private: true,
+    type: "module",
+    scripts: {
+      build: "nuxt build",
+      dev: "nuxt dev",
+      generate: "nuxt generate",
+      preview: "nuxt preview",
+      postinstall: "nuxt prepare",
+    },
+    devDependencies: {},
+    dependencies: {},
   };
 
-  // Write it
-  await fs.writeJson(pkgPath, tempPackageJson, { spaces: 2 });
-  console.log(`[ncu] Written to ${pkgPath}`);
+  // Collect all devDependencies and dependencies
+  const devDeps = { ...baseSet.packages.dev };
+  const prodDeps = { ...baseSet.packages.prod };
 
-  // Run ncu against the file
+  for (const feature of Object.values(featuresMap)) {
+    if (feature.packages?.dev) {
+      Object.assign(devDeps, feature.packages.dev);
+    }
+    if (feature.packages?.prod) {
+      Object.assign(prodDeps, feature.packages.prod);
+    }
+  }
+
+  // Attach them to the package.json
+  pkg.devDependencies = devDeps;
+  pkg.dependencies = prodDeps;
+
+  // Write it to disk
+  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+  console.log(`[ncu] Written package.json to ${pkgPath}`);
+
+  // Check for updates
   try {
     const { stdout } = await execa("ncu", ["--packageFile", pkgPath]);
     if (stdout.trim() === "") {
-      console.log("[ncu] All packages are up to date.");
+      console.log("[ncu] ✅ All packages are up to date.");
     } else {
-      console.log("[ncu] Upgrade suggestions:\n" + stdout);
+      console.log("[ncu] 🔼 Upgrade suggestions:\n" + stdout);
     }
   } catch (err) {
-    console.error("[ncu] Failed to run ncu:", err.message);
+    console.error("[ncu] ❌ Failed to run ncu:", err.message);
   }
 }
 
