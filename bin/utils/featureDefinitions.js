@@ -57,7 +57,12 @@ export const baseSet = {
 
 export const auth = {
   marker: "auth",
-  lines: ["app.vue", "pages/index.vue", "components/layout/AppHeader.vue"],
+  lines: [
+    "app.vue",
+    "pages/index.vue",
+    "components/layout/AppHeader.vue",
+    "nuxt.config.ts",
+  ],
   directoriesAndFiles: [
     "components/features/auth",
     "composables",
@@ -88,7 +93,7 @@ export const auth = {
 
 export const networking = {
   marker: "networking",
-  lines: ["components/layout/AppNavigation.vue"],
+  lines: ["components/layout/AppNavigation.vue", "nuxt.config.ts"],
   directoriesAndFiles: [
     "components/features/networking",
     "types/server",

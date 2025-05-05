@@ -3,6 +3,7 @@
 A modern, opinionated Nuxt 3 starter with optional modules like authentication, internationalization, and networking — designed to scale, customize, and ship fast.
 
 #### [GitHub Template](https://github.com/Innosan/nuxt-template-project)
+> You can hit me up on [GitHub](https://github.com/Innosan) or [Twitter](https://twitter.com/inno__san) if you have any questions or feedback (would appreciate it).
 
 ## ✨ Features
 
@@ -16,9 +17,9 @@ A modern, opinionated Nuxt 3 starter with optional modules like authentication, 
 ## 🚀 Getting Started
 
 ```bash
-npx create-robust-nuxt my-app
-cd my-app
-pnpm install
+npx create-robust-nuxt
+cd project-name
+pnpm i
 pnpm run dev
 ````
 
@@ -28,26 +29,21 @@ Use the CLI prompts to enable features like `auth`, `networking`, and more in th
 
 | Feature      | Description                      |
 | ------------ | -------------------------------- |
-| `auth`       | Adds Supabase + basic auth views |
-| `networking` | Placeholder for API utils setup  |
-
-## 🧪 Scripts
-
-| Script       | Description            |
-| ------------ | ---------------------- |
-| `pnpm run dev`   | Run development server |
-| `pnpm build` | Build for production   |
+| `auth`       | Adds Supabase and basic auth views |
+| `networking` | Placeholder for API utils setup and Pinia store |
 
 ## 📦 Built-in Tech Stack
 
 * Nuxt 3
+* Nitro
+* Nuxt UI
 * Vue 3 + Vue Router
 * TypeScript
 * Pinia
+* Nuxt I18n
 * Tailwind CSS
-* Supabase (optional)
-* Zod (optional)
-* Nuxt UI
+* Supabase (optional - auth feature)
+* Zod (optional - validation for auth features)
 
 ## 📃 License
 
