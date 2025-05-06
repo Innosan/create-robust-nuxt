@@ -1,17 +1,16 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { featuresMap } from "./features.js";
+import { AuthFeature, NetworkingFeature, ContentFeature } from "../features/index.js";
 
 export const generateEnvFile = async (targetDir: string, features: string[]) => {
 	const envVars = {};
+	const featureClasses = [AuthFeature, NetworkingFeature, ContentFeature];
 
-	for (const featureKey of features) {
-		// @ts-ignore
-		const feature = featuresMap[featureKey];
-		if (!feature?.env) continue;
-
-		Object.assign(envVars, feature.env);
+	for (const feature of featureClasses) {
+		if (features.includes(feature.marker) && feature.env) {
+			Object.assign(envVars, feature.env);
+		}
 	}
 
 	const envContent = Object.entries(envVars)
@@ -22,7 +21,6 @@ export const generateEnvFile = async (targetDir: string, features: string[]) => 
 
 	try {
 		await fs.writeFile(envPath, envContent);
-		// console.log(`[env] .env file created at ${envPath}`);
 	} catch (error) {
 		console.error("[env] Failed to write .env file:", error);
 	}

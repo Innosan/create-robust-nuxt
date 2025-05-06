@@ -1,0 +1,24 @@
+import { BaseFeature } from "../../dev/types/feature/BaseFeature.js";
+import { versions } from "../utils/packages.js";
+
+export default new (class ContentFeature extends BaseFeature {
+	constructor() {
+		super({
+			marker: "content",
+			lines: ["components/layout/AppNavigation.vue", "nuxt.config.ts"],
+			directoriesAndFiles: ["content", "pages/guides", "content.config.ts"],
+			question: {
+				type: "confirm",
+				name: "includeContent",
+				message: "Include content module?",
+				default: false,
+			},
+			packages: {
+				prod: {
+					"@nuxt/content": versions["@nuxt/content"],
+				},
+			},
+			env: {},
+		});
+	}
+})();

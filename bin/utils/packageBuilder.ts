@@ -1,10 +1,10 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { PackageType } from "../../dev/types/Feature.js";
+import type { PackageType } from "../../dev/types/Packages.js";
 
 import { baseSet } from "./packages.js";
-import { featuresMap } from "./features.js";
+import { AuthFeature, NetworkingFeature, ContentFeature } from "../features/index.js";
 
 export const prunePackageJson = async (targetDir: string, selectedFeatures: string[]) => {
 	const pkgPath = path.join(targetDir, "package.json");
@@ -14,25 +14,23 @@ export const prunePackageJson = async (targetDir: string, selectedFeatures: stri
 	const keepProd = new Set(Object.keys(baseSet.prod ?? {}));
 
 	for (const featureKey of selectedFeatures) {
-		// @ts-ignore
-		const feature = featuresMap[featureKey];
-		if (!feature?.packages) continue;
-
-		for (const type of ["dev", "prod"]) {
-			Object.keys(feature.packages[type as PackageType] || {}).forEach((pkg) =>
-				type === "dev" ? keepDev.add(pkg) : keepProd.add(pkg),
-			);
+		const feature = [AuthFeature, NetworkingFeature, ContentFeature].find(
+			(f) => f.marker === featureKey,
+		);
+		if (feature) {
+			for (const type of ["dev", "prod"]) {
+				Object.keys(feature.packages[type as PackageType] || {}).forEach((pkg) =>
+					type === "dev" ? keepDev.add(pkg) : keepProd.add(pkg),
+				);
+			}
 		}
 	}
 
-	// Prune devDependencies
 	for (const pkg of Object.keys(pkgJson.devDependencies || {})) {
 		if (!keepDev.has(pkg)) {
 			delete pkgJson.devDependencies[pkg];
 		}
 	}
-
-	// Prune dependencies
 	for (const pkg of Object.keys(pkgJson.dependencies || {})) {
 		if (!keepProd.has(pkg)) {
 			delete pkgJson.dependencies[pkg];

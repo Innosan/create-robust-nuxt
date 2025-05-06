@@ -12,6 +12,11 @@ export const removeNotFeatureMarkers = async (
 	relativePaths: string[],
 	feature: string,
 ) => {
+	// Return if no relative paths are provided
+	if (!relativePaths || relativePaths.length === 0) {
+		return;
+	}
+
 	const notBlockStart = `!@feature/${feature} - start`;
 	const notBlockEnd = `!@feature/${feature} - end`;
 
@@ -52,6 +57,11 @@ export const removeFeatureMarkers = async (
 	relativePaths: string[],
 	feature: string,
 ) => {
+	// Return if no relative paths are provided
+	if (!relativePaths || relativePaths.length === 0) {
+		return;
+	}
+
 	const blockStart = `@feature/${feature} - start`;
 	const blockEnd = `@feature/${feature} - end`;
 

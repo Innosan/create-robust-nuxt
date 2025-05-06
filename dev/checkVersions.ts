@@ -3,9 +3,11 @@ import path from "path";
 import { execa } from "execa";
 
 import { baseSet } from "../bin/utils/packages.js";
-import { featuresMap } from "../bin/utils/features.js";
+import { AuthFeature, NetworkingFeature, ContentFeature } from "../bin/features/index.js";
 
 async function generateAndCheckVersions() {
+	const features = [AuthFeature, NetworkingFeature, ContentFeature];
+
 	const devDir = path.join(process.cwd(), "dev");
 	const pkgPath = path.join(devDir, "package.json");
 
@@ -31,7 +33,7 @@ async function generateAndCheckVersions() {
 	const devDeps = { ...baseSet.dev };
 	const prodDeps = { ...baseSet.prod };
 
-	for (const feature of Object.values(featuresMap)) {
+	for (const feature of features) {
 		if (feature.packages?.dev) {
 			Object.assign(devDeps, feature.packages.dev);
 		}

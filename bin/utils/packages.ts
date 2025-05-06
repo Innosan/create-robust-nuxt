@@ -1,4 +1,4 @@
-import type { Packages } from "../../dev/types/Feature";
+import type { Packages } from "../../dev/types/Packages.js";
 
 export const versions = {
 	typescript: "^5.8.3",

@@ -10,11 +10,10 @@ import chalk from "chalk";
 
 import { prunePackageJson } from "./utils/packageBuilder.js";
 import { generateEnvFile } from "./utils/envBuilder.js";
-import { Features, featuresMap } from "./utils/features.js";
 
-const authFeature = featuresMap[Features.AUTH];
-const networkingFeature = featuresMap[Features.NETWORKING];
-const contentFeature = featuresMap[Features.CONTENT];
+import { AuthFeature, NetworkingFeature, ContentFeature } from "./features/index.js";
+
+const features = [AuthFeature, NetworkingFeature, ContentFeature];
 
 const questions: Question[] = [
 	{
@@ -23,15 +22,13 @@ const questions: Question[] = [
 		message: "What is the name of your project?",
 		default: "my-nuxt-app",
 	},
-	authFeature.question,
-	networkingFeature.question,
-	contentFeature.question,
+	...features.map((feature) => feature.question),
 ];
 
 // @ts-ignore
 const answers = await inquirer.prompt(questions);
 
-const { projectName, includeAuth, includeNetworking, includeContent } = answers;
+const { projectName } = answers;
 const targetDir = path.resolve(process.cwd(), projectName);
 
 // Check if the directory already exists
@@ -41,6 +38,7 @@ if (fs.existsSync(targetDir)) {
 			`\nDirectory '${projectName}' already exists. Please choose a different name.`,
 		),
 	);
+
 	process.exit(1);
 }
 
@@ -49,36 +47,33 @@ const emitter = degit("Innosan/nuxt-template-project");
 console.log(chalk.blue(`\nCloning template into '${projectName}'...`));
 await emitter.clone(targetDir);
 
-console.log(chalk.blue("\nPreparing your new project! Please, wait for a moment..."));
+console.log(chalk.blue("Preparing your new project! Please, wait for a moment..."));
 
-const selectedFeatures: string[] = [
-	...(includeAuth ? [Features.AUTH] : []),
-	...(includeNetworking ? [Features.NETWORKING] : []),
-	...(includeContent ? [Features.CONTENT] : []),
-];
+// Process each feature based on the corresponding prompt answer.
+const selectedFeatures: string[] = [];
+for (const feature of features) {
+	if (answers[feature.question.name]) {
+		selectedFeatures.push(feature.marker);
 
-const featureStates = [
-	[Features.AUTH, includeAuth],
-	[Features.NETWORKING, includeNetworking],
-	[Features.CONTENT, includeContent],
-] as const;
-
-// Remove the feature blocks, markers, files and directories from the files
-for (const [key, isEnabled] of featureStates) {
-	if (isEnabled) {
-		await featuresMap[key].onFeatureSelected(targetDir);
+		await feature.onFeatureSelected(targetDir);
 	} else {
-		await featuresMap[key].onFeatureRemoved(targetDir);
+		await feature.onFeatureRemoved(targetDir);
 	}
 }
+const skipped = features.filter((f) => !selectedFeatures.includes(f.marker));
 
 await prunePackageJson(targetDir, selectedFeatures);
 await generateEnvFile(targetDir, selectedFeatures);
 
-console.log(chalk.green(`\nProject ready! cd ${projectName} and start building.\n`));
-
-console.log(chalk.cyan("Included features:"));
+console.log(chalk.cyan("\nIncluded features:"));
 selectedFeatures.forEach((f) => console.log(" - " + f));
+
+if (skipped.length) {
+	console.log(chalk.gray("\nSkipped features:"));
+	skipped.forEach((f) => console.log(" - " + f.marker));
+}
+
+console.log(chalk.green(`Project ready! cd ${projectName} and start building.\n`));
 
 console.log(
 	chalk.blue(
