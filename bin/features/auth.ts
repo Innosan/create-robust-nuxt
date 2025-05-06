@@ -1,4 +1,4 @@
-import { BaseFeature } from "../../dev/types/feature/BaseFeature.js";
+import { BaseFeature } from "../types/feature/BaseFeature.js";
 import { versions } from "../utils/packages.js";
 
 export default new (class AuthFeature extends BaseFeature {

@@ -5,12 +5,12 @@ import type { FeatureOptions } from "./FeatureOptions.js";
 import {
 	removeFeatureBlockFromFiles,
 	removeNotFeatureBlockFromFiles,
-} from "../../../bin/utils/removeBlock.js";
+} from "../../utils/removeBlock.js";
 
 import {
 	removeFeatureMarkers,
 	removeNotFeatureMarkers,
-} from "../../../bin/utils/removeMarkers.js";
+} from "../../utils/removeMarkers.js";
 
 /**
  * BaseFeature class

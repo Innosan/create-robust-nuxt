@@ -11,7 +11,16 @@ A modern, opinionated Nuxt 3 starter with optional modules like authentication, 
 - 🎨 Prettier & ESLint with Tailwind support
 - 🗂 Modular feature-based architecture
 - 🔐 Optional Supabase auth module
+  - With Zod validation and basic auth views (Form and Page)
 - 📡 Optional networking module
+  - Placeholder for API utils setup and Pinia store
+  - Easily extendable for future features
+- 🌐 Nuxt I18n for internationalization
+	- Supports multiple languages and locales
+    - English (en) and Russian (ru) included
+- 🖌 Optional Nuxt Content module
+  - For easy content management and rendering
+  - Supports Markdown and JSON files
 - ⚙️ CLI to scaffold features dynamically
 
 ## 🚀 Getting Started
@@ -21,7 +30,10 @@ npx create-robust-nuxt
 cd project-name
 pnpm i
 pnpm run dev
-````
+
+# optional prettier run
+pnpm exec prettier --write .
+```
 
 Use the CLI prompts to enable features like `auth`, `networking`, and more in the future.
 
@@ -31,6 +43,7 @@ Use the CLI prompts to enable features like `auth`, `networking`, and more in th
 | ------------ | -------------------------------- |
 | `auth`       | Adds Supabase and basic auth views |
 | `networking` | Placeholder for API utils setup and Pinia store |
+| `content`    | Adds Nuxt Content module for easy content management |
 
 ## 📦 Built-in Tech Stack
 
@@ -42,8 +55,6 @@ Use the CLI prompts to enable features like `auth`, `networking`, and more in th
 * Pinia
 * Nuxt I18n
 * Tailwind CSS
-* Supabase (optional - auth feature)
-* Zod (optional - validation for auth features)
 
 ## 📃 License
 

@@ -1,4 +1,4 @@
-import { BaseFeature } from "../../dev/types/feature/BaseFeature.js";
+import { BaseFeature } from "../types/feature/BaseFeature.js";
 
 export default new (class NetworkingFeature extends BaseFeature {
 	constructor() {

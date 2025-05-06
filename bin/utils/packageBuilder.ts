@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 
-import type { PackageType } from "../../dev/types/Packages.js";
+import type { PackageType } from "../types/Packages.js";
 
 import { baseSet } from "./packages.js";
 import { AuthFeature, NetworkingFeature, ContentFeature } from "../features/index.js";
