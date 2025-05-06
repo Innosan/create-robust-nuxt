@@ -2,7 +2,8 @@ import fs from "fs-extra";
 import path from "path";
 import { execa } from "execa";
 
-import { versions, baseSet, featuresMap } from "../bin/utils/featureDefinitions.js";
+import { baseSet } from "../bin/utils/packages.js";
+import { featuresMap } from "../bin/utils/features.js";
 
 async function generateAndCheckVersions() {
 	const devDir = path.join(process.cwd(), "dev");
@@ -27,18 +28,14 @@ async function generateAndCheckVersions() {
 	};
 
 	// Collect all devDependencies and dependencies
-	const devDeps = { ...baseSet.packages.dev };
-	const prodDeps = { ...baseSet.packages.prod };
+	const devDeps = { ...baseSet.dev };
+	const prodDeps = { ...baseSet.prod };
 
 	for (const feature of Object.values(featuresMap)) {
-		// @ts-ignore
 		if (feature.packages?.dev) {
-			// @ts-ignore
 			Object.assign(devDeps, feature.packages.dev);
 		}
-		// @ts-ignore
 		if (feature.packages?.prod) {
-			// @ts-ignore
 			Object.assign(prodDeps, feature.packages.prod);
 		}
 	}

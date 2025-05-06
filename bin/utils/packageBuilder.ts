@@ -1,24 +1,25 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { baseSet, auth, networking } from "./featureDefinitions.js";
+import { PackageType } from "../../dev/types/Feature.js";
 
-const featureMap = { auth, networking };
+import { baseSet } from "./packages.js";
+import { featuresMap } from "./features.js";
 
 export const prunePackageJson = async (targetDir: string, selectedFeatures: string[]) => {
 	const pkgPath = path.join(targetDir, "package.json");
 	const pkgJson = await fs.readJSON(pkgPath);
 
-	const keepDev = new Set(Object.keys(baseSet.packages.dev));
-	const keepProd = new Set(Object.keys(baseSet.packages.prod));
+	const keepDev = new Set(Object.keys(baseSet.dev ?? {}));
+	const keepProd = new Set(Object.keys(baseSet.prod ?? {}));
 
 	for (const featureKey of selectedFeatures) {
 		// @ts-ignore
-		const feature = featureMap[featureKey];
+		const feature = featuresMap[featureKey];
 		if (!feature?.packages) continue;
 
 		for (const type of ["dev", "prod"]) {
-			Object.keys(feature.packages[type] || {}).forEach((pkg) =>
+			Object.keys(feature.packages[type as PackageType] || {}).forEach((pkg) =>
 				type === "dev" ? keepDev.add(pkg) : keepProd.add(pkg),
 			);
 		}

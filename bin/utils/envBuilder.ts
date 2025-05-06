@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { featuresMap } from "./featureDefinitions.js";
+import { featuresMap } from "./features.js";
 
 export const generateEnvFile = async (targetDir: string, features: string[]) => {
 	const envVars = {};

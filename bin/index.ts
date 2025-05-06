@@ -1,85 +1,75 @@
 #!/usr/bin/env node
 
+import type { Question } from "inquirer";
+
+import fs from "fs-extra";
 import inquirer from "inquirer";
 import degit from "degit";
-import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 
-import {
-	removeFeatureBlockFromFiles,
-	removeNotFeatureBlockFromFiles,
-} from "./utils/removeBlock.js";
-
-import { removeNotFeatureMarkers, removeFeatureMarkers } from "./utils/removeMarkers.js";
-
 import { prunePackageJson } from "./utils/packageBuilder.js";
 import { generateEnvFile } from "./utils/envBuilder.js";
-import { auth, networking } from "./utils/featureDefinitions.js";
+import { Features, featuresMap } from "./utils/features.js";
 
-const answers = await inquirer.prompt([
+const authFeature = featuresMap[Features.AUTH];
+const networkingFeature = featuresMap[Features.NETWORKING];
+const contentFeature = featuresMap[Features.CONTENT];
+
+const questions: Question[] = [
 	{
 		type: "input",
 		name: "projectName",
-		message: "Project name:",
-		default: "nuxt-template-site",
+		message: "What is the name of your project?",
+		default: "my-nuxt-app",
 	},
-	{
-		type: "confirm",
-		name: "includeAuth",
-		message: "Include auth module?",
-		default: false,
-	},
-	{
-		type: "confirm",
-		name: "includeNetworking",
-		message: "Include networking module?",
-		default: false,
-	},
-	// Add more features as needed
-]);
+	authFeature.question,
+	networkingFeature.question,
+	contentFeature.question,
+];
 
-const { projectName, includeAuth, includeNetworking } = answers;
+// @ts-ignore
+const answers = await inquirer.prompt(questions);
+
+const { projectName, includeAuth, includeNetworking, includeContent } = answers;
 const targetDir = path.resolve(process.cwd(), projectName);
+
+// Check if the directory already exists
+if (fs.existsSync(targetDir)) {
+	console.error(
+		chalk.red(
+			`\nDirectory '${projectName}' already exists. Please choose a different name.`,
+		),
+	);
+	process.exit(1);
+}
 
 // Clone the template
 const emitter = degit("Innosan/nuxt-template-project");
+console.log(chalk.blue(`\nCloning template into '${projectName}'...`));
 await emitter.clone(targetDir);
-
-const selectedFeatures = [];
 
 console.log(chalk.blue("\nPreparing your new project! Please, wait for a moment..."));
 
-// Remove unnecessary files and directories of auth module
-if (!includeAuth) {
-	// Files & Directories to remove
-	for (const fileOrDirectory of auth.directoriesAndFiles) {
-		await fs.remove(`${targetDir}/${fileOrDirectory}`);
+const selectedFeatures: string[] = [
+	...(includeAuth ? [Features.AUTH] : []),
+	...(includeNetworking ? [Features.NETWORKING] : []),
+	...(includeContent ? [Features.CONTENT] : []),
+];
+
+const featureStates = [
+	[Features.AUTH, includeAuth],
+	[Features.NETWORKING, includeNetworking],
+	[Features.CONTENT, includeContent],
+] as const;
+
+// Remove the feature blocks, markers, files and directories from the files
+for (const [key, isEnabled] of featureStates) {
+	if (isEnabled) {
+		await featuresMap[key].onFeatureSelected(targetDir);
+	} else {
+		await featuresMap[key].onFeatureRemoved(targetDir);
 	}
-
-	// Lines to remove from files
-	await removeFeatureBlockFromFiles(targetDir, auth.lines, auth.marker);
-	await removeNotFeatureMarkers(targetDir, auth.lines, auth.marker);
-} else {
-	selectedFeatures.push(auth.marker);
-
-	await removeNotFeatureBlockFromFiles(targetDir, auth.lines, auth.marker);
-	await removeFeatureMarkers(targetDir, auth.lines, auth.marker);
-}
-
-// Remove networking files if not selected
-if (!includeNetworking) {
-	// Files & Directories to remove
-	for (const fileOrDirectory of networking.directoriesAndFiles) {
-		await fs.remove(`${targetDir}/${fileOrDirectory}`);
-	}
-
-	// Lines to remove from files
-	await removeFeatureBlockFromFiles(targetDir, networking.lines, networking.marker);
-} else {
-	selectedFeatures.push(networking.marker);
-
-	await removeFeatureMarkers(targetDir, networking.lines, networking.marker);
 }
 
 await prunePackageJson(targetDir, selectedFeatures);
@@ -87,8 +77,11 @@ await generateEnvFile(targetDir, selectedFeatures);
 
 console.log(chalk.green(`\nProject ready! cd ${projectName} and start building.\n`));
 
+console.log(chalk.cyan("Included features:"));
+selectedFeatures.forEach((f) => console.log(" - " + f));
+
 console.log(
 	chalk.blue(
-		"👉 It is recommended to run `pnpm exec prettier --write .` to format your project after `pnpm i`.\n",
+		"\n👉 It is recommended to run `pnpm exec prettier --write .` to format your project after `pnpm i`.\n",
 	),
 );
