@@ -11,7 +11,11 @@ import chalk from "chalk";
 import { prunePackageJson } from "./utils/packageBuilder.js";
 import { generateEnvFile } from "./utils/envBuilder.js";
 
-import { AuthFeature, NetworkingFeature, ContentFeature } from "./features/index.js";
+import {
+	AuthFeature,
+	NetworkingFeature,
+	ContentFeature,
+} from "./features/index.js";
 
 const features = [AuthFeature, NetworkingFeature, ContentFeature];
 
@@ -47,13 +51,16 @@ const emitter = degit("Innosan/nuxt-template-project");
 console.log(chalk.blue(`\nCloning template into '${projectName}'...`));
 await emitter.clone(targetDir);
 
-console.log(chalk.blue("Preparing your new project! Please, wait for a moment..."));
+console.log(
+	chalk.blue("Preparing your new project! Please, wait for a moment..."),
+);
 
 // Process each feature based on the corresponding prompt answer.
 const selectedFeatures: string[] = [];
 for (const feature of features) {
 	if (answers[feature.question.name]) {
 		selectedFeatures.push(feature.marker);
+		console.log(chalk.blue(feature.selectedMessage));
 
 		await feature.onFeatureSelected(targetDir);
 	} else {
@@ -73,7 +80,9 @@ if (skipped.length) {
 	skipped.forEach((f) => console.log(" - " + f.marker));
 }
 
-console.log(chalk.green(`Project ready! cd ${projectName} and start building.\n`));
+console.log(
+	chalk.green(`Project ready! cd ${projectName} and start building.\n`),
+);
 
 console.log(
 	chalk.blue(

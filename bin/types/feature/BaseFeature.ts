@@ -40,7 +40,11 @@ export abstract class BaseFeature {
 			this.options.lines,
 			this.options.marker,
 		);
-		await removeNotFeatureMarkers(targetDir, this.options.lines, this.options.marker);
+		await removeNotFeatureMarkers(
+			targetDir,
+			this.options.lines,
+			this.options.marker,
+		);
 	}
 
 	async onFeatureSelected(targetDir: string): Promise<void> {
@@ -49,11 +53,19 @@ export abstract class BaseFeature {
 			this.options.lines,
 			this.options.marker,
 		);
-		await removeFeatureMarkers(targetDir, this.options.lines, this.options.marker);
+		await removeFeatureMarkers(
+			targetDir,
+			this.options.lines,
+			this.options.marker,
+		);
 	}
 
 	get marker() {
 		return this.options.marker;
+	}
+
+	get selectedMessage() {
+		return this.options.selectedMessage;
 	}
 
 	get question() {

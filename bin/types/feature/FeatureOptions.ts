@@ -3,6 +3,7 @@ import type { Packages } from "../Packages";
 
 export interface FeatureOptions {
 	marker: string;
+	selectedMessage: string;
 	lines: string[];
 	directoriesAndFiles: string[];
 	question: Question;

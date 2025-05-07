@@ -1,6 +1,6 @@
 # 🧱 Create Robust Nuxt
 
-A modern, opinionated Nuxt 3 starter with optional modules like authentication, internationalization, and networking — designed to scale, customize, and ship fast.
+A modern, internationalized + opinionated Nuxt 3 starter with optional modules like authentication, networking and content support — designed to scale, customize, and ship fast.
 
 #### [GitHub Template](https://github.com/Innosan/nuxt-template-project)
 > You can hit me up on [GitHub](https://github.com/Innosan) or [Twitter](https://twitter.com/inno__san) if you have any questions or feedback (would appreciate it).
@@ -9,19 +9,23 @@ A modern, opinionated Nuxt 3 starter with optional modules like authentication, 
 
 - ✅ Nuxt 3 + TypeScript
 - 🎨 Prettier & ESLint with Tailwind support
+- 🍍 Pinia stores included
 - 🗂 Modular feature-based architecture
+- 🌐 Nuxt I18n for internationalization
+	- Supports multiple languages and locales
+    - English (en) and Russian (ru) included
 - 🔐 Optional Supabase auth module
   - With Zod validation and basic auth views (Form and Page)
 - 📡 Optional networking module
   - Placeholder for API utils setup and Pinia store
   - Easily extendable for future features
-- 🌐 Nuxt I18n for internationalization
-	- Supports multiple languages and locales
-    - English (en) and Russian (ru) included
 - 🖌 Optional Nuxt Content module
   - For easy content management and rendering
   - Supports Markdown and JSON files
 - ⚙️ CLI to scaffold features dynamically
+
+## Important note
+> Template project and CLI Tool were developed using pnpm. It is recommended to use pnpm for installation and development. Otherwise, you may encounter issues with dependencies and compatibility.
 
 ## 🚀 Getting Started
 
@@ -35,7 +39,7 @@ pnpm run dev
 pnpm exec prettier --write .
 ```
 
-Use the CLI prompts to enable features like `auth`, `networking`, and more in the future.
+> Use the CLI prompts to enable features like `auth`, `networking`, and more in the future.
 
 ## 🧩 Available Feature Modules
 

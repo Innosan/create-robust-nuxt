@@ -5,6 +5,8 @@ export default new (class AuthFeature extends BaseFeature {
 	constructor() {
 		super({
 			marker: "auth",
+			selectedMessage:
+				"Don't forget to configure your Supabase URL and key in .env",
 			lines: [
 				"app.vue",
 				"pages/index.vue",
@@ -34,8 +36,8 @@ export default new (class AuthFeature extends BaseFeature {
 				},
 			},
 			env: {
-				NUXT_PUBLIC_SUPABASE_URL: "https://your-supabase-url.supabase.co",
-				NUXT_PUBLIC_SUPABASE_KEY: "your-supabase-key",
+				SUPABASE_URL: "https://your-supabase-url.supabase.co",
+				SUPABASE_KEY: "your-supabase-key",
 			},
 		});
 	}

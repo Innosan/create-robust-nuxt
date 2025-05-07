@@ -3,7 +3,11 @@ import path from "path";
 import { execa } from "execa";
 
 import { baseSet } from "../bin/utils/packages.js";
-import { AuthFeature, NetworkingFeature, ContentFeature } from "../bin/features/index.js";
+import {
+	AuthFeature,
+	NetworkingFeature,
+	ContentFeature,
+} from "../bin/features/index.js";
 
 async function generateAndCheckVersions() {
 	const features = [AuthFeature, NetworkingFeature, ContentFeature];
@@ -47,7 +51,7 @@ async function generateAndCheckVersions() {
 	pkg.dependencies = prodDeps;
 
 	// Write it to disk
-	await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+	await fs.writeJson(pkgPath, pkg, { spaces: 4 });
 	console.log(`[ncu] Written package.json to ${pkgPath}`);
 
 	// Check for updates

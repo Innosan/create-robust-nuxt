@@ -5,8 +5,14 @@ export default new (class ContentFeature extends BaseFeature {
 	constructor() {
 		super({
 			marker: "content",
+			selectedMessage:
+				"All basic content files are included in /content folder",
 			lines: ["components/layout/AppNavigation.vue", "nuxt.config.ts"],
-			directoriesAndFiles: ["content", "pages/guides", "content.config.ts"],
+			directoriesAndFiles: [
+				"content",
+				"pages/guides",
+				"content.config.ts",
+			],
 			question: {
 				type: "confirm",
 				name: "includeContent",

@@ -19,6 +19,9 @@ export const versions = {
 	"@nuxt/content": "^3.5.1",
 	"pinia-plugin-persistedstate": "^4.2.0",
 
+	tailwindcss: "^4.1.5",
+	postcss: "^8.5.3",
+	autoprefixer: "^10.4.21",
 	sass: "^1.87.0",
 	"@formkit/auto-animate": "^0.8.2",
 	"@iconify-json/heroicons": "^1.2.2",
@@ -46,6 +49,9 @@ export const baseSet: Packages = {
 		sass: versions["sass"],
 		typescript: versions["typescript"],
 		"@iconify-json/heroicons": versions["@iconify-json/heroicons"],
+		tailwindcss: versions["tailwindcss"],
+		postcss: versions["postcss"],
+		autoprefixer: versions["autoprefixer"],
 	},
 	prod: {
 		"@nuxt/ui": versions["@nuxt/ui"],
