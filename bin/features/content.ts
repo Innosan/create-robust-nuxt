@@ -9,6 +9,7 @@ export default new (class ContentFeature extends BaseFeature {
 				"All basic content files are included in /content folder",
 			lines: ["components/layout/AppNavigation.vue", "nuxt.config.ts"],
 			directoriesAndFiles: [
+				"components/features/content",
 				"content",
 				"pages/guides",
 				"content.config.ts",

@@ -15,11 +15,13 @@ export default new (class AuthFeature extends BaseFeature {
 			],
 			directoriesAndFiles: [
 				"components/features/auth",
-				"composables",
+				"composables/auth.ts",
+				"composables/authForm.ts",
 				"middleware",
 				"layouts/authed.vue",
 				"layouts/unauthed.vue",
 				"pages/login.vue",
+				"types/ui/Tabs.ts",
 			],
 			question: {
 				type: "confirm",

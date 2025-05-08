@@ -9,10 +9,10 @@ export default new (class NetworkingFeature extends BaseFeature {
 			lines: ["components/layout/AppNavigation.vue", "nuxt.config.ts"],
 			directoriesAndFiles: [
 				"components/features/networking",
-				"types/server",
 				"server/api",
-				"pages/articles.vue",
-				"stores/articles.ts",
+				"pages/recommendations.vue",
+				"stores/recommendations.ts",
+				"types/server",
 			],
 			question: {
 				type: "confirm",
@@ -21,7 +21,9 @@ export default new (class NetworkingFeature extends BaseFeature {
 				default: false,
 			},
 			packages: {},
-			env: {},
+			env: {
+				NUXT_API_BASE: "https://api.jikan.moe/v4",
+			},
 		});
 	}
 })();
